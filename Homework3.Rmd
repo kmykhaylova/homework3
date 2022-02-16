@@ -1,0 +1,79 @@
+---
+title: 'Homework 3'
+author: "Kate Mykhaylova"
+date: "2/16/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(classdata)
+
+```
+
+## Cars and mileage
+#### Due: 2/16/2022 before 11:59pm. Submit in Canvas (file upload).
+
+In this homework we will use the `mpg` data set, you can access the data by loading the package `ggplot2` into your R session by executing the command 
+`library(ggplot2)`. The `mpg` data includes information about fuel economy of popular car models
+for the years 1999 and 2008 as collected by the US Environmental Protection Agency.
+
+
+Most exercises are from the ggplot2 book section 2.2.1. You might find it helpful for working on the homework to read through this section.
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work.
+Make sure to replace "Your Name" in the YAML with your name.
+
+2.  List five functions that you could use to get more information about the
+mpg dataset. <br />
+    -summary: print the summary of the data <br />
+    -view: view the data in organized way <br />
+    -colnames: shows the columns in the data <br />
+    -str: view the structure of the data <br />
+    -dim: shows the dimensions of the data <br />
+    
+3. Using the `ggplot2` package create a scatterplot of `hwy` and `cty` and describe the relationship. Why are there so few points visible? Use a geom that helps reduce the amount of overplotting in the scatterplot. (Try ```?geom_jitter```)
+```{r}
+head(mpg)
+```
+```{r}
+p <- ggplot(mpg, aes(cty, hwy))
+p + geom_jitter()
+```
+<br />
+A lot of the data is the same so the points will overlap with each other. They are all still there you just can't see them all due to overlapping.<br />
+
+4. Apart from the US, most countries use fuel consumption (fuel consumed
+over fixed distance) rather than fuel economy (distance traveled with fixed
+amount of fuel). How could you convert `cty` and `hwy` into the European
+standard of liter/100 km? Introduce corresponding variables into the `mpg` data.
+```{r}
+convert <- function(milespergallon){
+  GtoL <- 3.785411784
+  MtoK <- 1.609344 
+  km <- (100*GtoL)/(milespergallon*MtoK)
+  km
+}
+```
+```{r}
+apply(mpg[, c("cty", "hwy")], 2, convert) %>% 
+  head()
+```
+
+5.  Are cars in 2008 more fuel efficient than cars in 1999? Expand on your answer in (3) for a visual approach to this question. Note: you are not asked to find numeric answers. Instead, interpret plots. <br />
+Yes, cars in 2008 are more fuel efficient than cars in 1999 because mpg has increased since 1999. The scatterplot shows a clear linear increase in fuel consumption since there is also more data from 2008 than from 1999. <br />
+
+6. Use the `ggplot2` package to create  side-by-side boxplots of `cty` by `class`. Describe the relationship in 2-3 sentences. 
+Change the label for the y-axis to 'city miles per gallon' (see ```?ylab```).  
+```{r}
+ggplot(mpg, aes(class,cty)) + geom_boxplot() + ylab("city miles per gallon")
+```
+<br />
+With boxplots it is easier to compare the city mpg across all of the vehicle classes. From the boxplots, it shows that compact class has the best city mpg since the median is higher than the rest. On the other hand, subcompact seems to be more varied than the rest so it is hard to tell whether the city mpg is better or not.<br />
+
+Note: your submission is supposed to be fully reproducible, i.e. the TA and I will 'knit' your submission in RStudio. 
+
+
+For the submission: submit your solution in an **R Markdown file** and (just for insurance) submit the **corresponding html (or Word)** file with it. 
